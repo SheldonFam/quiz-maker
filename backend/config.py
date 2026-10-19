@@ -1,11 +1,12 @@
-from pydantic_settings import BaseSettings,SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env",extra='ignore')
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url:str
+    database_url: str
 
     frontend_url: str = "http://localhost:5174"
 
-settings=Settings()
 
+settings = Settings()
