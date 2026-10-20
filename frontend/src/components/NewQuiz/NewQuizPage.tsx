@@ -1,27 +1,65 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { readCurriculumOptions } from "@/client/@tanstack/react-query.gen";
+import {
+  generateQuizMutation,
+  readCurriculumOptions,
+} from "@/client/@tanstack/react-query.gen";
+import { NewQuizForm } from "./NewQuizForm";
+import type { NewQuizValues } from "./newQuizSchema";
+import { GeneratingQuiz } from "./GeneratingQuiz";
 
 export function NewQuizPage() {
   const curriculumQuery = useQuery(readCurriculumOptions());
+  const generateQuiz = useMutation({
+    ...generateQuizMutation(),
+    onSuccess: (quiz) => {
+      console.log("Generated quiz", quiz);
+    },
+  });
+
+  const handleGenerate = (values: NewQuizValues) => {
+    generateQuiz.mutate({ body: values });
+  };
+
+  const handleCancel = () => {
+    generateQuiz.reset();
+  };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight">New quiz</h1>
-      <p className="mt-2 text-ink-muted">The quiz form goes here (step 3).</p>
+    <div className="mx-auto max-w-3xl">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight">New quiz</h1>
+        <p className="mt-1 text-ink-muted">
+          Pick a level, subject and topic. You can check and change every
+          question before saving.
+        </p>
+      </div>
 
-      {curriculumQuery.isPending && <p className="mt-4">Loading levels...</p>}
+      {curriculumQuery.isPending && (
+        <p className="text-ink-muted">Loading levels...</p>
+      )}
       {curriculumQuery.isError && (
-        <p className="mt-4">Could not load the levels.</p>
+        <p className="text-destructive">
+          Couldn't load the levels. Is the backend running?
+        </p>
       )}
       {curriculumQuery.isSuccess && (
-        <ul className="mt-4 list-disc pl-6">
-          {curriculumQuery.data.data.map((level) => (
-            <li key={level.name}>
-              {level.name} ({level.curriculum})
-            </li>
-          ))}
-        </ul>
+        <>
+          <div hidden={generateQuiz.isPending}>
+            <NewQuizForm
+              levels={curriculumQuery.data.data}
+              hasError={generateQuiz.isError}
+              onGenerate={handleGenerate}
+            />
+          </div>
+          {generateQuiz.isPending && (
+            <GeneratingQuiz
+              questionCount={generateQuiz.variables.body.question_count}
+              topic={generateQuiz.variables.body.topic}
+              onCancel={handleCancel}
+            />
+          )}
+        </>
       )}
     </div>
   );
