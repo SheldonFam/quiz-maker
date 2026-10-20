@@ -45,11 +45,11 @@ class QuizBase(SQLModel):
 
 
 class QuizCreate(QuizBase):
-    questions: list[QuestionCreate]
+    questions: list[QuestionCreate] = Field(min_length=1)
 
 
 class QuizUpdate(QuizBase):
-    questions: list[QuestionCreate]
+    questions: list[QuestionCreate] = Field(min_length=1)
 
 
 class QuizPublic(QuizBase):
