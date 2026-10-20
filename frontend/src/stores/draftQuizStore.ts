@@ -94,3 +94,19 @@ export const useDraftQuizStore = create<DraftQuizState>()(
     { name: "quiz-maker-draft" },
   ),
 );
+
+export const toQuizCreate = (draftQuiz: DraftQuiz): QuizCreate => {
+  return {
+    title: draftQuiz.title,
+    level: draftQuiz.level,
+    subject: draftQuiz.subject,
+    topic: draftQuiz.topic,
+    language: draftQuiz.language,
+    questions: draftQuiz.questions.map((question) => ({
+      text: question.text,
+      options: question.options,
+      correct_index: question.correct_index,
+      explanation: question.explanation,
+    })),
+  };
+};

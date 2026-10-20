@@ -1,7 +1,14 @@
-import { Link } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
-import { useDraftQuizStore } from "@/stores/draftQuizStore";
+import {
+  createQuizMutation,
+  readQuizzesQueryKey,
+} from "@/client/@tanstack/react-query.gen";
+import { toQuizCreate, useDraftQuizStore } from "@/stores/draftQuizStore";
 import { QuestionCard } from "./QuestionCard";
+import { SaveBar } from "./SaveBar";
 
 const languageLabels = {
   en: "English",
@@ -9,7 +16,17 @@ const languageLabels = {
 };
 
 export function ReviewPage() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const draftQuiz = useDraftQuizStore((state) => state.draftQuiz);
+  const clearDraft = useDraftQuizStore((state) => state.clearDraft);
+
+  const createQuiz = useMutation({
+    ...createQuizMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: readQuizzesQueryKey() });
+    },
+  });
 
   if (draftQuiz === null) {
     return (
@@ -35,8 +52,29 @@ export function ReviewPage() {
     language: draftQuiz.language,
   };
 
+  const handleSave = () => {
+    createQuiz.mutate(
+      { body: toQuizCreate(draftQuiz) },
+      {
+        onSuccess: async (savedQuiz) => {
+          toast.success("Quiz saved");
+          await navigate({
+            to: "/quizzes/$quizId",
+            params: { quizId: String(savedQuiz.id) },
+          });
+          clearDraft();
+        },
+      },
+    );
+  };
+
+  const handleDiscard = async () => {
+    await navigate({ to: "/" });
+    clearDraft();
+  };
+
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl pb-24">
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight">{draftQuiz.title}</h1>
         <p className="mt-1 text-ink-muted tabular-nums">
@@ -61,6 +99,14 @@ export function ReviewPage() {
           ))}
         </ol>
       )}
+
+      <SaveBar
+        questionCount={draftQuiz.questions.length}
+        isSaving={createQuiz.isPending}
+        hasError={createQuiz.isError}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+      />
     </div>
   );
 }
