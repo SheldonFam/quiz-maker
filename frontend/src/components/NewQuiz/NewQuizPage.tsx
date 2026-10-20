@@ -7,18 +7,25 @@ import {
 import { NewQuizForm } from "./NewQuizForm";
 import type { NewQuizValues } from "./newQuizSchema";
 import { GeneratingQuiz } from "./GeneratingQuiz";
+import { useNavigate } from "@tanstack/react-router";
+import { useDraftQuizStore } from "@/stores/draftQuizStore";
 
 export function NewQuizPage() {
+  const navigate = useNavigate();
+  const startDraft = useDraftQuizStore((state) => state.startDraft);
   const curriculumQuery = useQuery(readCurriculumOptions());
-  const generateQuiz = useMutation({
-    ...generateQuizMutation(),
-    onSuccess: (quiz) => {
-      console.log("Generated quiz", quiz);
-    },
-  });
+  const generateQuiz = useMutation(generateQuizMutation());
 
   const handleGenerate = (values: NewQuizValues) => {
-    generateQuiz.mutate({ body: values });
+    generateQuiz.mutate(
+      { body: values },
+      {
+        onSuccess: (quiz) => {
+          startDraft(quiz);
+          navigate({ to: "/review" });
+        },
+      },
+    );
   };
 
   const handleCancel = () => {

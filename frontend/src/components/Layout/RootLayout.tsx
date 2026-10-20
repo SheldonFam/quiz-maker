@@ -1,6 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 
 import { TopBar } from "@/components/Layout/TopBar";
+import { Toaster } from "@/components/ui/sonner";
 
 export function RootLayout() {
   return (
@@ -9,6 +10,7 @@ export function RootLayout() {
       <main className="mx-auto max-w-5xl px-4 pt-6 pb-16 sm:pt-10">
         <Outlet />
       </main>
+      <Toaster position="top-right" />
     </div>
   );
 }
