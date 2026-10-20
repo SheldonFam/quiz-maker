@@ -7,8 +7,10 @@ export function PrintQuizPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Print quiz {quizId}</h1>
-      <p className="mt-2 text-gray-600">Student copy, teacher copy and both go here (step 10).</p>
+      <h1 className="text-2xl font-bold tracking-tight">Print quiz {quizId}</h1>
+      <p className="mt-2 text-ink-muted">
+        Student copy, teacher copy and both go here (step 10).
+      </p>
     </div>
   );
 }
