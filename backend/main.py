@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRoute
 from sqlalchemy import text
 from sqlmodel import create_engine
 
@@ -22,7 +23,12 @@ from models import (
     SubjectPublic,
 )
 
-app = FastAPI()
+
+def make_operation_id(route: APIRoute) -> str:
+    return route.name
+
+
+app = FastAPI(generate_unique_id_function=make_operation_id)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_url],

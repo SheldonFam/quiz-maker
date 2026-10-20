@@ -1,22 +1,27 @@
-import { useEffect, useState } from "react";
 import "./App.css";
-
-const testURL = import.meta.env.VITE_API_URL + "/health";
+import { useQuery } from "@tanstack/react-query";
+import { readCurriculumOptions } from "./client/@tanstack/react-query.gen";
 
 function App() {
-  const [message, setMessage] = useState("Checking...");
+  const curriculumQuery = useQuery(readCurriculumOptions());
 
-  useEffect(() => {
-    fetch(testURL)
-      .then((res) => res.json())
-      .then((data) => {
-        setMessage("Backend says " + data.status);
-      });
-  }, []);
+  if (curriculumQuery.isPending) {
+    return <p>Loading...</p>;
+  }
+
+  if (curriculumQuery.isError) {
+    return <p>Could not load the curriculum.</p>;
+  }
 
   return (
     <>
-      <h1>{message}</h1>
+      <ul>
+        {curriculumQuery.data.data.map((level) => (
+          <li key={level.name}>
+            {level.name} ({level.curriculum})
+          </li>
+        ))}
+      </ul>
     </>
   );
 }

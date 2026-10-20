@@ -312,74 +312,74 @@ export type ValidationError = {
     };
 };
 
-export type ReadRootGetData = {
+export type ReadRootData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/';
 };
 
-export type ReadRootGetResponses = {
+export type ReadRootResponses = {
     /**
      * Successful Response
      */
     200: unknown;
 };
 
-export type ReadHealthHealthGetData = {
+export type ReadHealthData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/health';
 };
 
-export type ReadHealthHealthGetResponses = {
+export type ReadHealthResponses = {
     /**
      * Successful Response
      */
     200: unknown;
 };
 
-export type ReadDatabaseHealthHealthDatabaseGetData = {
+export type ReadDatabaseHealthData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/health/database';
 };
 
-export type ReadDatabaseHealthHealthDatabaseGetResponses = {
+export type ReadDatabaseHealthResponses = {
     /**
      * Successful Response
      */
     200: unknown;
 };
 
-export type GenerateQuizQuizzesGeneratePostData = {
+export type GenerateQuizData = {
     body: QuizGenerateRequest;
     path?: never;
     query?: never;
     url: '/quizzes/generate';
 };
 
-export type GenerateQuizQuizzesGeneratePostErrors = {
+export type GenerateQuizErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GenerateQuizQuizzesGeneratePostError = GenerateQuizQuizzesGeneratePostErrors[keyof GenerateQuizQuizzesGeneratePostErrors];
+export type GenerateQuizError = GenerateQuizErrors[keyof GenerateQuizErrors];
 
-export type GenerateQuizQuizzesGeneratePostResponses = {
+export type GenerateQuizResponses = {
     /**
      * Successful Response
      */
     200: QuizCreate;
 };
 
-export type GenerateQuizQuizzesGeneratePostResponse = GenerateQuizQuizzesGeneratePostResponses[keyof GenerateQuizQuizzesGeneratePostResponses];
+export type GenerateQuizResponse = GenerateQuizResponses[keyof GenerateQuizResponses];
 
-export type ReadQuizzesQuizzesGetData = {
+export type ReadQuizzesData = {
     body?: never;
     path?: never;
     query?: {
@@ -395,75 +395,75 @@ export type ReadQuizzesQuizzesGetData = {
     url: '/quizzes';
 };
 
-export type ReadQuizzesQuizzesGetErrors = {
+export type ReadQuizzesErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadQuizzesQuizzesGetError = ReadQuizzesQuizzesGetErrors[keyof ReadQuizzesQuizzesGetErrors];
+export type ReadQuizzesError = ReadQuizzesErrors[keyof ReadQuizzesErrors];
 
-export type ReadQuizzesQuizzesGetResponses = {
+export type ReadQuizzesResponses = {
     /**
      * Successful Response
      */
     200: QuizzesPublic;
 };
 
-export type ReadQuizzesQuizzesGetResponse = ReadQuizzesQuizzesGetResponses[keyof ReadQuizzesQuizzesGetResponses];
+export type ReadQuizzesResponse = ReadQuizzesResponses[keyof ReadQuizzesResponses];
 
-export type CreateQuizQuizzesPostData = {
+export type CreateQuizData = {
     body: QuizCreate;
     path?: never;
     query?: never;
     url: '/quizzes';
 };
 
-export type CreateQuizQuizzesPostErrors = {
+export type CreateQuizErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type CreateQuizQuizzesPostError = CreateQuizQuizzesPostErrors[keyof CreateQuizQuizzesPostErrors];
+export type CreateQuizError = CreateQuizErrors[keyof CreateQuizErrors];
 
-export type CreateQuizQuizzesPostResponses = {
+export type CreateQuizResponses = {
     /**
      * Successful Response
      */
     201: QuizPublic;
 };
 
-export type CreateQuizQuizzesPostResponse = CreateQuizQuizzesPostResponses[keyof CreateQuizQuizzesPostResponses];
+export type CreateQuizResponse = CreateQuizResponses[keyof CreateQuizResponses];
 
-export type GenerateQuestionQuestionsGeneratePostData = {
+export type GenerateQuestionData = {
     body: QuestionGenerateRequest;
     path?: never;
     query?: never;
     url: '/questions/generate';
 };
 
-export type GenerateQuestionQuestionsGeneratePostErrors = {
+export type GenerateQuestionErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GenerateQuestionQuestionsGeneratePostError = GenerateQuestionQuestionsGeneratePostErrors[keyof GenerateQuestionQuestionsGeneratePostErrors];
+export type GenerateQuestionError = GenerateQuestionErrors[keyof GenerateQuestionErrors];
 
-export type GenerateQuestionQuestionsGeneratePostResponses = {
+export type GenerateQuestionResponses = {
     /**
      * Successful Response
      */
     200: QuestionCreate;
 };
 
-export type GenerateQuestionQuestionsGeneratePostResponse = GenerateQuestionQuestionsGeneratePostResponses[keyof GenerateQuestionQuestionsGeneratePostResponses];
+export type GenerateQuestionResponse = GenerateQuestionResponses[keyof GenerateQuestionResponses];
 
-export type DeleteQuizQuizzesQuizIdDeleteData = {
+export type DeleteQuizData = {
     body?: never;
     path: {
         /**
@@ -475,25 +475,25 @@ export type DeleteQuizQuizzesQuizIdDeleteData = {
     url: '/quizzes/{quiz_id}';
 };
 
-export type DeleteQuizQuizzesQuizIdDeleteErrors = {
+export type DeleteQuizErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type DeleteQuizQuizzesQuizIdDeleteError = DeleteQuizQuizzesQuizIdDeleteErrors[keyof DeleteQuizQuizzesQuizIdDeleteErrors];
+export type DeleteQuizError = DeleteQuizErrors[keyof DeleteQuizErrors];
 
-export type DeleteQuizQuizzesQuizIdDeleteResponses = {
+export type DeleteQuizResponses = {
     /**
      * Successful Response
      */
     200: Message;
 };
 
-export type DeleteQuizQuizzesQuizIdDeleteResponse = DeleteQuizQuizzesQuizIdDeleteResponses[keyof DeleteQuizQuizzesQuizIdDeleteResponses];
+export type DeleteQuizResponse = DeleteQuizResponses[keyof DeleteQuizResponses];
 
-export type ReadQuizQuizzesQuizIdGetData = {
+export type ReadQuizData = {
     body?: never;
     path: {
         /**
@@ -505,25 +505,25 @@ export type ReadQuizQuizzesQuizIdGetData = {
     url: '/quizzes/{quiz_id}';
 };
 
-export type ReadQuizQuizzesQuizIdGetErrors = {
+export type ReadQuizErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadQuizQuizzesQuizIdGetError = ReadQuizQuizzesQuizIdGetErrors[keyof ReadQuizQuizzesQuizIdGetErrors];
+export type ReadQuizError = ReadQuizErrors[keyof ReadQuizErrors];
 
-export type ReadQuizQuizzesQuizIdGetResponses = {
+export type ReadQuizResponses = {
     /**
      * Successful Response
      */
     200: QuizPublic;
 };
 
-export type ReadQuizQuizzesQuizIdGetResponse = ReadQuizQuizzesQuizIdGetResponses[keyof ReadQuizQuizzesQuizIdGetResponses];
+export type ReadQuizResponse = ReadQuizResponses[keyof ReadQuizResponses];
 
-export type UpdateQuizQuizzesQuizIdPutData = {
+export type UpdateQuizData = {
     body: QuizUpdate;
     path: {
         /**
@@ -535,36 +535,36 @@ export type UpdateQuizQuizzesQuizIdPutData = {
     url: '/quizzes/{quiz_id}';
 };
 
-export type UpdateQuizQuizzesQuizIdPutErrors = {
+export type UpdateQuizErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type UpdateQuizQuizzesQuizIdPutError = UpdateQuizQuizzesQuizIdPutErrors[keyof UpdateQuizQuizzesQuizIdPutErrors];
+export type UpdateQuizError = UpdateQuizErrors[keyof UpdateQuizErrors];
 
-export type UpdateQuizQuizzesQuizIdPutResponses = {
+export type UpdateQuizResponses = {
     /**
      * Successful Response
      */
     200: QuizPublic;
 };
 
-export type UpdateQuizQuizzesQuizIdPutResponse = UpdateQuizQuizzesQuizIdPutResponses[keyof UpdateQuizQuizzesQuizIdPutResponses];
+export type UpdateQuizResponse = UpdateQuizResponses[keyof UpdateQuizResponses];
 
-export type ReadCurriculumCurriculumGetData = {
+export type ReadCurriculumData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/curriculum';
 };
 
-export type ReadCurriculumCurriculumGetResponses = {
+export type ReadCurriculumResponses = {
     /**
      * Successful Response
      */
     200: CurriculumPublic;
 };
 
-export type ReadCurriculumCurriculumGetResponse = ReadCurriculumCurriculumGetResponses[keyof ReadCurriculumCurriculumGetResponses];
+export type ReadCurriculumResponse = ReadCurriculumResponses[keyof ReadCurriculumResponses];
