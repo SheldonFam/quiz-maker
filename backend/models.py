@@ -6,12 +6,19 @@ from sqlmodel import Field, SQLModel
 Language = Literal["en", "ms"]
 
 
-class QuizGenerateRequest(SQLModel):
+class GenerateBase(SQLModel):
     level: str = Field(min_length=1, max_length=100)
     subject: str = Field(min_length=1, max_length=100)
     topic: str = Field(min_length=1, max_length=255)
     language: Language
+
+
+class QuizGenerateRequest(GenerateBase):
     question_count: int = Field(ge=1, le=20)
+
+
+class QuestionGenerateRequest(GenerateBase):
+    pass
 
 
 class QuestionBase(SQLModel):
@@ -58,3 +65,18 @@ class QuizzesPublic(SQLModel):
 
 class Message(SQLModel):
     message: str
+
+
+class SubjectPublic(SQLModel):
+    name: str
+    topics: list[str]
+
+
+class LevelPublic(SQLModel):
+    name: str
+    curriculum: str
+    subjects: list[SubjectPublic]
+
+
+class CurriculumPublic(SQLModel):
+    data: list[LevelPublic]
