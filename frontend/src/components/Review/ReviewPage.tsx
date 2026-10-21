@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
 
 import type { QuizPublic } from "@/client";
 import {
@@ -9,6 +8,7 @@ import {
   readQuizzesQueryKey,
   updateQuizMutation,
 } from "@/client/@tanstack/react-query.gen";
+import { toast } from "@/components/ui/toast";
 import { toQuizCreate, useDraftQuizStore } from "@/stores/draftQuizStore";
 import { QuestionCard } from "./QuestionCard";
 import { SaveBar } from "./SaveBar";
@@ -69,7 +69,10 @@ export function ReviewPage() {
     typeof draftQuiz.savedQuizId === "number" ? draftQuiz.savedQuizId : null;
 
   const showSavedQuiz = async (savedQuiz: QuizPublic) => {
-    toast.success(savedQuizId === null ? "Quiz saved" : "Changes saved");
+    toast.add({
+      title: savedQuizId === null ? "Quiz saved" : "Changes saved",
+      type: "success",
+    });
     await navigate({
       to: "/quizzes/$quizId",
       params: { quizId: String(savedQuiz.id) },

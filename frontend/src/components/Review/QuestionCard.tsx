@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Pencil, RefreshCw, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 
 import { generateQuestionMutation } from "@/client/@tanstack/react-query.gen";
 import type { QuestionGenerateRequest } from "@/client";
 import { QuestionContent } from "@/components/Common/QuestionContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import { useDraftQuizStore, type DraftQuestion } from "@/stores/draftQuizStore";
 import { QuestionEditor } from "./QuestionEditor";
 import type { QuestionValues } from "./questionSchema";
@@ -48,10 +48,14 @@ export function QuestionCard({
 
   const handleDelete = () => {
     deleteQuestion(question.id);
-    toast("Question deleted", {
-      action: {
-        label: "Undo",
-        onClick: () => restoreQuestion(question, position),
+    const toastId = toast.add({
+      title: "Question deleted",
+      actionProps: {
+        children: "Undo",
+        onClick: () => {
+          restoreQuestion(question, position);
+          toast.close(toastId);
+        },
       },
     });
   };

@@ -169,3 +169,8 @@
     @apply bg-primary-soft text-primary-soft-foreground;
   }
 }
+
+@page {
+  size: A4;
+  margin: 15mm;
+}

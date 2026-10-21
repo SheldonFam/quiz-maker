@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, getRouteApi, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Pencil, Printer, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   deleteQuizMutation,
@@ -22,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import { useDraftQuizStore } from "@/stores/draftQuizStore";
 import { ShowAnswersSwitch } from "./ShowAnswersSwitch";
 
@@ -92,7 +92,7 @@ export function QuizPage() {
       { path: { quiz_id: quiz.id } },
       {
         onSuccess: async () => {
-          toast.success("Quiz deleted");
+          toast.add({ title: "Quiz deleted", type: "success" });
           await navigate({ to: "/quizzes" });
         },
       },
