@@ -10,18 +10,20 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
-type QuizListErrorProps = {
+type LoadErrorProps = {
+  title: string;
   onRetry: () => void;
+  className?: string;
 };
 
-export function QuizListError({ onRetry }: QuizListErrorProps) {
+export function LoadError({ title, onRetry, className }: LoadErrorProps) {
   return (
-    <Empty>
+    <Empty className={className}>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <TriangleAlert />
         </EmptyMedia>
-        <EmptyTitle>Couldn't load your quizzes</EmptyTitle>
+        <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>
           Check your connection, then try again.
         </EmptyDescription>

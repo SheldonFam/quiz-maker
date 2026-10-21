@@ -8,23 +8,12 @@ import {
   readQuizOptions,
   readQuizzesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { ConfirmDialog } from "@/components/Common/ConfirmDialog";
 import { QuestionContent } from "@/components/Common/QuestionContent";
 import { QuizLoading } from "@/components/Common/QuizLoading";
 import { QuizNotFound } from "@/components/Common/QuizNotFound";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { useDraftQuizStore } from "@/stores/draftQuizStore";
@@ -48,6 +37,7 @@ export function QuizPage() {
   const queryClient = useQueryClient();
   const startDraft = useDraftQuizStore((state) => state.startDraft);
   const [showAnswers, setShowAnswers] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const quizQuery = useQuery(
     readQuizOptions({ path: { quiz_id: Number(quizId) } }),
@@ -124,37 +114,23 @@ export function QuizPage() {
             <Printer />
             Print
           </Link>
-          <AlertDialog>
-            <AlertDialogTrigger
-              render={
-                <Button variant="destructive">
-                  <Trash2 />
-                  Delete
-                </Button>
-              }
-            />
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete this quiz?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  "{quiz.title}" will be deleted. This can't be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel disabled={deleteQuiz.isPending}>
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive text-background hover:bg-destructive/90 hover:text-background"
-                  onClick={handleDelete}
-                  disabled={deleteQuiz.isPending}
-                >
-                  {deleteQuiz.isPending && <Spinner aria-hidden="true" />}
-                  {deleteQuiz.isPending ? "Deleting..." : "Delete"}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button
+            variant="destructive"
+            onClick={() => setIsDeleteDialogOpen(true)}
+          >
+            <Trash2 />
+            Delete
+          </Button>
+          <ConfirmDialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+            title="Delete this quiz?"
+            description={`"${quiz.title}" will be deleted. This can't be undone.`}
+            confirmLabel="Delete"
+            pendingLabel="Deleting..."
+            isPending={deleteQuiz.isPending}
+            onConfirm={handleDelete}
+          />
         </div>
       </div>
 

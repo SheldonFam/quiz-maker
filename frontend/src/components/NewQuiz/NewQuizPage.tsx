@@ -4,7 +4,9 @@ import {
   generateQuizMutation,
   readCurriculumOptions,
 } from "@/client/@tanstack/react-query.gen";
+import { LoadError } from "@/components/Common/LoadError";
 import { NewQuizForm } from "./NewQuizForm";
+import { NewQuizFormLoading } from "./NewQuizFormLoading";
 import type { NewQuizValues } from "./newQuizSchema";
 import { GeneratingQuiz } from "./GeneratingQuiz";
 import { useNavigate } from "@tanstack/react-router";
@@ -42,13 +44,12 @@ export function NewQuizPage() {
         </p>
       </div>
 
-      {curriculumQuery.isPending && (
-        <p className="text-ink-muted">Loading levels...</p>
-      )}
+      {curriculumQuery.isPending && <NewQuizFormLoading />}
       {curriculumQuery.isError && (
-        <p className="text-destructive">
-          Couldn't load the levels. Is the backend running?
-        </p>
+        <LoadError
+          title="Couldn't load the levels"
+          onRetry={() => curriculumQuery.refetch()}
+        />
       )}
       {curriculumQuery.isSuccess && (
         <>

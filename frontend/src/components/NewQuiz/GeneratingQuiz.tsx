@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type GeneratingQuizProps = {
   questionCount: number;
@@ -45,13 +46,10 @@ function SkeletonQuestionCard() {
       aria-hidden="true"
       className="rounded-xl bg-card p-6 shadow-xs ring-1 ring-edge"
     >
-      <div className="h-4 w-2/3 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
+      <Skeleton className="h-4 w-2/3 rounded-full" />
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
         {Array.from({ length: 4 }, (_, index) => (
-          <div
-            key={index}
-            className="h-10 animate-pulse rounded-lg bg-muted motion-reduce:animate-none"
-          />
+          <Skeleton key={index} className="h-10 rounded-lg" />
         ))}
       </div>
     </div>

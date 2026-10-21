@@ -1,14 +1,6 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { useState } from "react";
+
+import { ConfirmDialog } from "@/components/Common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -33,6 +25,8 @@ export function SaveBar({
   onSave,
   onDiscard,
 }: SaveBarProps) {
+  const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false);
+
   const isEditingQuestion = editingQuestionNumber !== null;
   const saveLabel = isSavedQuiz ? "Save changes" : "Save quiz";
   const discardLabel = isSavedQuiz ? "Discard changes" : "Discard draft";
@@ -74,32 +68,22 @@ export function SaveBar({
           )}
         </p>
         <div className="flex shrink-0 items-center gap-3">
-          <AlertDialog>
-            <AlertDialogTrigger
-              render={
-                <Button variant="ghost" disabled={isSaving}>
-                  {discardLabel}
-                </Button>
-              }
-            />
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{discardTitle}</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {discardDescription}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Keep editing</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive text-background hover:bg-destructive/90 hover:text-background"
-                  onClick={onDiscard}
-                >
-                  {discardLabel}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button
+            variant="ghost"
+            onClick={() => setIsDiscardDialogOpen(true)}
+            disabled={isSaving}
+          >
+            {discardLabel}
+          </Button>
+          <ConfirmDialog
+            open={isDiscardDialogOpen}
+            onOpenChange={setIsDiscardDialogOpen}
+            title={discardTitle}
+            description={discardDescription}
+            confirmLabel={discardLabel}
+            cancelLabel="Keep editing"
+            onConfirm={onDiscard}
+          />
           <Button
             onClick={onSave}
             disabled={isSaving || questionCount === 0 || isEditingQuestion}

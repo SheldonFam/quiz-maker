@@ -6,6 +6,7 @@ import {
   readCurriculumOptions,
   readQuizzesOptions,
 } from "@/client/@tanstack/react-query.gen";
+import { LoadError } from "@/components/Common/LoadError";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/empty";
 import { QuizFilters } from "./QuizFilters";
 import { QuizList } from "./QuizList";
-import { QuizListError } from "./QuizListError";
 import { QuizListLoading } from "./QuizListLoading";
 
 const routeApi = getRouteApi("/quizzes/");
@@ -94,7 +94,10 @@ export function SavedQuizzesPage() {
       {quizzesQuery.isPending && <QuizListLoading />}
 
       {quizzesQuery.isError && (
-        <QuizListError onRetry={() => quizzesQuery.refetch()} />
+        <LoadError
+          title="Couldn't load your quizzes"
+          onRetry={() => quizzesQuery.refetch()}
+        />
       )}
 
       {quizzesQuery.isSuccess && quizzesQuery.data.count === 0 && (
