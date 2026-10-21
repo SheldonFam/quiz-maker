@@ -9,6 +9,8 @@ import {
   readQuizzesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
 import { QuestionContent } from "@/components/Common/QuestionContent";
+import { QuizLoading } from "@/components/Common/QuizLoading";
+import { QuizNotFound } from "@/components/Common/QuizNotFound";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,9 +23,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { useDraftQuizStore } from "@/stores/draftQuizStore";
-import { ShowAnswersSwitch } from "./ShowAnswersSwitch";
 
 const routeApi = getRouteApi("/quizzes/$quizId/");
 
@@ -57,27 +61,11 @@ export function QuizPage() {
   });
 
   if (quizQuery.isPending) {
-    return (
-      <div className="mx-auto max-w-3xl space-y-4" aria-hidden="true">
-        <div className="h-8 w-1/2 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
-        <div className="h-48 animate-pulse rounded-xl bg-muted motion-reduce:animate-none" />
-      </div>
-    );
+    return <QuizLoading />;
   }
 
   if (quizQuery.isError) {
-    return (
-      <div className="mx-auto max-w-3xl rounded-xl bg-card px-6 py-12 text-center shadow-xs ring-1 ring-edge">
-        <h1 className="text-lg font-semibold">Quiz not found</h1>
-        <p className="mt-1 text-ink-muted">It may have been deleted.</p>
-        <Link
-          to="/quizzes"
-          className="mt-4 inline-block font-semibold text-link hover:underline"
-        >
-          Back to saved quizzes
-        </Link>
-      </div>
-    );
+    return <QuizNotFound />;
   }
 
   const quiz = quizQuery.data;
@@ -119,7 +107,10 @@ export function QuizPage() {
       </div>
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <ShowAnswersSwitch checked={showAnswers} onChange={setShowAnswers} />
+        <Label className="gap-2.5">
+          <Switch checked={showAnswers} onCheckedChange={setShowAnswers} />
+          Show answers
+        </Label>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" onClick={handleEdit}>
             <Pencil />
@@ -158,6 +149,7 @@ export function QuizPage() {
                   onClick={handleDelete}
                   disabled={deleteQuiz.isPending}
                 >
+                  {deleteQuiz.isPending && <Spinner aria-hidden="true" />}
                   {deleteQuiz.isPending ? "Deleting..." : "Delete"}
                 </AlertDialogAction>
               </AlertDialogFooter>

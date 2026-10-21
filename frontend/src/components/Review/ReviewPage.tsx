@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { FilePlus2, ListX } from "lucide-react";
 
 import type { QuizPublic } from "@/client";
 import {
@@ -8,6 +9,15 @@ import {
   readQuizzesQueryKey,
   updateQuizMutation,
 } from "@/client/@tanstack/react-query.gen";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { toast } from "@/components/ui/toast";
 import { toQuizCreate, useDraftQuizStore } from "@/stores/draftQuizStore";
 import { QuestionCard } from "./QuestionCard";
@@ -22,6 +32,9 @@ export function ReviewPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const draftQuiz = useDraftQuizStore((state) => state.draftQuiz);
+  const editingQuestionId = useDraftQuizStore(
+    (state) => state.editingQuestionId,
+  );
   const clearDraft = useDraftQuizStore((state) => state.clearDraft);
 
   const createQuiz = useMutation({
@@ -43,18 +56,24 @@ export function ReviewPage() {
 
   if (draftQuiz === null) {
     return (
-      <div className="mx-auto max-w-3xl rounded-xl bg-card px-6 py-12 text-center shadow-xs ring-1 ring-edge">
-        <h1 className="text-lg font-semibold">No quiz to review</h1>
-        <p className="mt-1 text-ink-muted">
-          Create a quiz first, then check it here.
-        </p>
-        <Link
-          to="/"
-          className="mt-4 inline-block font-semibold text-link hover:underline"
-        >
-          Create a quiz
-        </Link>
-      </div>
+      <Empty className="mx-auto max-w-3xl">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <FilePlus2 />
+          </EmptyMedia>
+          <EmptyTitle>
+            <h1>No quiz to review</h1>
+          </EmptyTitle>
+          <EmptyDescription>
+            Create a quiz first, then check it here.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button nativeButton={false} render={<Link to="/" />}>
+            Create a quiz
+          </Button>
+        </EmptyContent>
+      </Empty>
     );
   }
 
@@ -67,6 +86,16 @@ export function ReviewPage() {
 
   const savedQuizId =
     typeof draftQuiz.savedQuizId === "number" ? draftQuiz.savedQuizId : null;
+
+  const editedCount = draftQuiz.questions.filter(
+    (question) => question.edited,
+  ).length;
+
+  const editingPosition = draftQuiz.questions.findIndex(
+    (question) => question.id === editingQuestionId,
+  );
+  const editingQuestionNumber =
+    editingPosition === -1 ? null : editingPosition + 1;
 
   const showSavedQuiz = async (savedQuiz: QuizPublic) => {
     toast.add({
@@ -121,9 +150,24 @@ export function ReviewPage() {
       </div>
 
       {draftQuiz.questions.length === 0 ? (
-        <p className="rounded-xl bg-card px-6 py-12 text-center text-ink-muted shadow-xs ring-1 ring-edge">
-          You deleted every question. Use Undo, or create a new quiz.
-        </p>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <ListX />
+            </EmptyMedia>
+            <EmptyTitle>
+              <h2>No questions left</h2>
+            </EmptyTitle>
+            <EmptyDescription>
+              You deleted every question. Create a new quiz to start again.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button nativeButton={false} render={<Link to="/" />}>
+              Create a new quiz
+            </Button>
+          </EmptyContent>
+        </Empty>
       ) : (
         <ol className="space-y-4">
           {draftQuiz.questions.map((question, position) => (
@@ -139,7 +183,9 @@ export function ReviewPage() {
 
       <SaveBar
         questionCount={draftQuiz.questions.length}
-        saveLabel={savedQuizId === null ? "Save quiz" : "Save changes"}
+        editedCount={editedCount}
+        editingQuestionNumber={editingQuestionNumber}
+        isSavedQuiz={savedQuizId !== null}
         isSaving={createQuiz.isPending || updateQuiz.isPending}
         hasError={createQuiz.isError || updateQuiz.isError}
         onSave={handleSave}

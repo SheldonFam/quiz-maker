@@ -1,12 +1,35 @@
 import { Link } from "@tanstack/react-router";
+import { MapPinOff } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 export function NotFound() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight">Page not found</h1>
-      <Link to="/" className="text-link">
-        Go to New quiz
-      </Link>
-    </div>
+    <Empty className="mx-auto max-w-3xl">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <MapPinOff />
+        </EmptyMedia>
+        <EmptyTitle>
+          <h1>Page not found</h1>
+        </EmptyTitle>
+        <EmptyDescription>
+          This link doesn't go anywhere in Quiz Maker.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button nativeButton={false} render={<Link to="/" />}>
+          Create a quiz
+        </Button>
+      </EmptyContent>
+    </Empty>
   );
 }

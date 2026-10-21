@@ -1,8 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleAlert } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
 import type { LevelPublic } from "@/client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -24,7 +33,7 @@ const questionCountChoices = [
 const languageChoices = [
   { value: "en", label: "English" },
   { value: "ms", label: "Bahasa Melayu" },
-];
+] as const;
 
 type NewQuizFormProps = {
   levels: LevelPublic[];
@@ -76,10 +85,8 @@ export function NewQuizForm({
     >
       <div className="space-y-7 p-5 sm:p-8">
         <div className="grid gap-6 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label htmlFor="level" className="text-sm font-medium">
-              Level
-            </label>
+          <Field>
+            <FieldLabel htmlFor="level">Level</FieldLabel>
             <Controller
               control={form.control}
               name="level"
@@ -94,8 +101,12 @@ export function NewQuizForm({
                 >
                   <SelectTrigger
                     id="level"
+                    ref={field.ref}
                     className="w-full"
                     aria-invalid={fieldState.invalid}
+                    aria-describedby={
+                      fieldState.invalid ? "level-error" : undefined
+                    }
                   >
                     <SelectValue placeholder="Choose a level" />
                   </SelectTrigger>
@@ -109,15 +120,11 @@ export function NewQuizForm({
                 </Select>
               )}
             />
-            {errors.level && (
-              <p className="text-sm text-destructive">{errors.level.message}</p>
-            )}
-          </div>
+            <FieldError id="level-error" errors={[errors.level]} />
+          </Field>
 
-          <div className="space-y-2">
-            <label htmlFor="subject" className="text-sm font-medium">
-              Subject
-            </label>
+          <Field>
+            <FieldLabel htmlFor="subject">Subject</FieldLabel>
             <Controller
               control={form.control}
               name="subject"
@@ -132,8 +139,12 @@ export function NewQuizForm({
                 >
                   <SelectTrigger
                     id="subject"
+                    ref={field.ref}
                     className="w-full"
                     aria-invalid={fieldState.invalid}
+                    aria-describedby={
+                      fieldState.invalid ? "subject-error" : undefined
+                    }
                   >
                     <SelectValue
                       placeholder={
@@ -153,29 +164,22 @@ export function NewQuizForm({
                 </Select>
               )}
             />
-            {errors.subject && (
-              <p className="text-sm text-destructive">
-                {errors.subject.message}
-              </p>
-            )}
-          </div>
+            <FieldError id="subject-error" errors={[errors.subject]} />
+          </Field>
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="topic" className="text-sm font-medium">
-            Topic
-          </label>
+        <Field>
+          <FieldLabel htmlFor="topic">Topic</FieldLabel>
           <Input
             id="topic"
             autoComplete="off"
             placeholder="For example: Pecahan"
             aria-invalid={errors.topic ? true : undefined}
+            aria-describedby={errors.topic ? "topic-error" : undefined}
             className="h-11 text-base"
             {...form.register("topic")}
           />
-          {errors.topic && (
-            <p className="text-sm text-destructive">{errors.topic.message}</p>
-          )}
+          <FieldError id="topic-error" errors={[errors.topic]} />
           {suggestedTopics.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted-foreground">
@@ -195,48 +199,59 @@ export function NewQuizForm({
               ))}
             </div>
           )}
-        </div>
+        </Field>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          <div className="space-y-2">
-            <span className="text-sm font-medium">Number of questions</span>
+          <FieldSet className="gap-0">
+            <FieldLegend variant="label" className="mb-2">
+              Number of questions
+            </FieldLegend>
             <Controller
               control={form.control}
               name="question_count"
               render={({ field }) => (
                 <ChoiceGroup
-                  label="Number of questions"
                   choices={questionCountChoices}
                   value={field.value}
                   onChange={field.onChange}
                 />
               )}
             />
-          </div>
+          </FieldSet>
 
-          <div className="space-y-2">
-            <span className="text-sm font-medium">Language</span>
+          <FieldSet className="gap-0">
+            <FieldLegend variant="label" className="mb-2">
+              Language
+            </FieldLegend>
             <Controller
               control={form.control}
               name="language"
               render={({ field }) => (
                 <ChoiceGroup
-                  label="Language"
                   choices={languageChoices}
                   value={field.value}
                   onChange={field.onChange}
                 />
               )}
             />
-          </div>
+          </FieldSet>
         </div>
+
+        {hasError && (
+          <Alert variant="destructive">
+            <CircleAlert />
+            <AlertTitle>Couldn't create the quiz</AlertTitle>
+            <AlertDescription>
+              Your choices are still here. Press Create quiz to try again.
+            </AlertDescription>
+          </Alert>
+        )}
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border bg-surface-hover px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p className="text-sm text-muted-foreground">
-          {hasError
-            ? "Couldn't create the quiz. Try again."
-            : "Each question has 4 choices, the correct answer and a short explanation."}
+          Each question has 4 choices, the correct answer and a short
+          explanation.
         </p>
         <Button type="submit" size="lg">
           Create quiz

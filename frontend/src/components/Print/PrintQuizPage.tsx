@@ -3,6 +3,8 @@ import { Link, getRouteApi } from "@tanstack/react-router";
 import { ArrowLeft, Printer } from "lucide-react";
 
 import { readQuizOptions } from "@/client/@tanstack/react-query.gen";
+import { QuizLoading } from "@/components/Common/QuizLoading";
+import { QuizNotFound } from "@/components/Common/QuizNotFound";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaperSheet } from "./PaperSheet";
@@ -28,27 +30,11 @@ export function PrintQuizPage() {
   };
 
   if (quizQuery.isPending) {
-    return (
-      <div className="mx-auto max-w-3xl space-y-4" aria-hidden="true">
-        <div className="h-8 w-1/2 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
-        <div className="h-96 animate-pulse rounded-xl bg-muted motion-reduce:animate-none" />
-      </div>
-    );
+    return <QuizLoading />;
   }
 
   if (quizQuery.isError) {
-    return (
-      <div className="mx-auto max-w-3xl rounded-xl bg-card px-6 py-12 text-center shadow-xs ring-1 ring-edge">
-        <h1 className="text-lg font-semibold">Quiz not found</h1>
-        <p className="mt-1 text-ink-muted">It may have been deleted.</p>
-        <Link
-          to="/quizzes"
-          className="mt-4 inline-block font-semibold text-link hover:underline"
-        >
-          Back to saved quizzes
-        </Link>
-      </div>
-    );
+    return <QuizNotFound />;
   }
 
   const quiz = quizQuery.data;

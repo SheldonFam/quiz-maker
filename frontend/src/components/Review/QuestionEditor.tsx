@@ -2,6 +2,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
 import type { DraftQuestion } from "@/stores/draftQuizStore";
 import { questionSchema, type QuestionValues } from "./questionSchema";
 
@@ -11,9 +21,6 @@ const optionFields = [
   { letter: "C", name: "options.2" },
   { letter: "D", name: "options.3" },
 ] as const;
-
-const fieldClassName =
-  "w-full rounded-md bg-card px-3 py-2 text-sm text-foreground shadow-xs inset-ring inset-ring-input transition-shadow duration-150 outline-none placeholder:text-muted-foreground focus-visible:inset-ring-2 focus-visible:inset-ring-ring aria-invalid:inset-ring-destructive";
 
 type QuestionEditorProps = {
   question: DraftQuestion;
@@ -38,6 +45,10 @@ export function QuestionEditor({
 
   const { errors, isDirty } = form.formState;
 
+  const textId = `text-${question.id}`;
+
+  const explanationId = `explanation-${question.id}`;
+
   const handleSave = (values: QuestionValues) => {
     if (!isDirty) {
       onCancel();
@@ -52,92 +63,105 @@ export function QuestionEditor({
       noValidate
       className="space-y-5"
     >
-      <div className="space-y-2">
-        <label htmlFor={`text-${question.id}`} className="text-sm font-medium">
-          Question
-        </label>
-        <textarea
-          id={`text-${question.id}`}
-          rows={2}
+      <Field>
+        <FieldLabel htmlFor={textId}>Question</FieldLabel>
+        <Textarea
+          id={textId}
           aria-invalid={errors.text ? true : undefined}
-          className={fieldClassName}
+          aria-describedby={errors.text ? `${textId}-error` : undefined}
           {...form.register("text")}
         />
-        {errors.text && (
-          <p className="text-sm text-destructive">{errors.text.message}</p>
-        )}
-      </div>
+        <FieldError id={`${textId}-error`} errors={[errors.text]} />
+      </Field>
 
-      <fieldset className="space-y-2">
-        <legend className="text-sm font-medium">
-          Options (pick the correct answer)
-        </legend>
+      <FieldSet className="gap-0">
+        <FieldLegend variant="label" className="mb-2">
+          Options
+        </FieldLegend>
+        <div className="grid gap-2.5 sm:grid-cols-2">
+          {optionFields.map((optionField, optionIndex) => {
+            const optionId = `option-${optionIndex}-${question.id}`;
+            const optionError = errors.options?.[optionIndex];
+
+            return (
+              <div key={optionField.name} className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor={optionId}
+                    className="w-4 text-xs font-semibold text-ink-muted"
+                  >
+                    {optionField.letter}
+                  </label>
+                  <Input
+                    id={optionId}
+                    aria-invalid={optionError ? true : undefined}
+                    aria-describedby={
+                      optionError ? `${optionId}-error` : undefined
+                    }
+                    {...form.register(optionField.name)}
+                  />
+                </div>
+                <FieldError
+                  id={`${optionId}-error`}
+                  className="pl-6"
+                  errors={[optionError]}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </FieldSet>
+
+      <Field>
+        <FieldLabel id={`correct-${question.id}`}>Correct answer</FieldLabel>
         <Controller
           control={form.control}
           name="correct_index"
           render={({ field }) => (
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <RadioGroup
+              aria-labelledby={`correct-${question.id}`}
+              value={field.value}
+              onValueChange={(newValue: number) => field.onChange(newValue)}
+              className="flex flex-wrap gap-x-5 gap-y-2"
+            >
               {optionFields.map((optionField, optionIndex) => (
-                <div key={optionField.name} className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name={`correct-${question.id}`}
-                      aria-label={`Option ${optionField.letter} is correct`}
-                      checked={field.value === optionIndex}
-                      onChange={() => field.onChange(optionIndex)}
-                      className="size-4 shrink-0 accent-correct-strong"
-                    />
-                    <span className="w-4 text-xs font-semibold text-ink-muted">
-                      {optionField.letter}
-                    </span>
-                    <input
-                      aria-label={`Option ${optionField.letter}`}
-                      aria-invalid={
-                        errors.options?.[optionIndex] ? true : undefined
-                      }
-                      className={`${fieldClassName} h-9`}
-                      {...form.register(optionField.name)}
-                    />
-                  </div>
-                  {errors.options?.[optionIndex] && (
-                    <p className="pl-12 text-sm text-destructive">
-                      {errors.options[optionIndex].message}
-                    </p>
-                  )}
-                </div>
+                <label
+                  key={optionField.name}
+                  className="flex items-center gap-2 text-sm font-medium"
+                >
+                  <RadioGroupItem
+                    value={optionIndex}
+                    className="size-5 data-checked:bg-correct-strong"
+                  />
+                  {optionField.letter}
+                </label>
               ))}
-            </div>
+            </RadioGroup>
           )}
         />
-      </fieldset>
+      </Field>
 
-      <div className="space-y-2">
-        <label
-          htmlFor={`explanation-${question.id}`}
-          className="text-sm font-medium"
-        >
-          Explanation
-        </label>
-        <textarea
-          id={`explanation-${question.id}`}
-          rows={2}
+      <Field>
+        <FieldLabel htmlFor={explanationId}>Explanation</FieldLabel>
+        <Textarea
+          id={explanationId}
           aria-invalid={errors.explanation ? true : undefined}
-          className={fieldClassName}
+          aria-describedby={
+            errors.explanation ? `${explanationId}-error` : undefined
+          }
           {...form.register("explanation")}
         />
-        {errors.explanation && (
-          <p className="text-sm text-destructive">
-            {errors.explanation.message}
-          </p>
-        )}
-      </div>
+        <FieldError
+          id={`${explanationId}-error`}
+          errors={[errors.explanation]}
+        />
+      </Field>
 
       <div className="flex justify-end gap-3">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">Save changes</Button>
+        <Button type="submit">Save question</Button>
       </div>
     </form>
   );

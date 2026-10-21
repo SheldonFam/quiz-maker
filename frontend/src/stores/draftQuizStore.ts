@@ -15,11 +15,14 @@ type DraftQuiz = Omit<QuizCreate, "questions"> & {
 
 type DraftQuizState = {
   draftQuiz: DraftQuiz | null;
+  editingQuestionId: string | null;
   startDraft: (quiz: QuizCreate, savedQuizId?: number) => void;
   replaceQuestion: (questionId: string, question: QuestionCreate) => void;
   updateQuestion: (questionId: string, question: QuestionCreate) => void;
   deleteQuestion: (questionId: string) => void;
   restoreQuestion: (question: DraftQuestion, position: number) => void;
+  startEditing: (questionId: string) => void;
+  stopEditing: () => void;
   clearDraft: () => void;
 };
 
@@ -38,6 +41,7 @@ export const useDraftQuizStore = create<DraftQuizState>()(
   persist(
     (set) => ({
       draftQuiz: null,
+      editingQuestionId: null,
 
       startDraft: (quiz, savedQuizId) =>
         set({
@@ -50,6 +54,7 @@ export const useDraftQuizStore = create<DraftQuizState>()(
             questions: quiz.questions.map(toDraftQuestion),
             savedQuizId: savedQuizId ?? null,
           },
+          editingQuestionId: null,
         }),
 
       replaceQuestion: (questionId, question) =>
@@ -102,9 +107,16 @@ export const useDraftQuizStore = create<DraftQuizState>()(
           return { draftQuiz: { ...state.draftQuiz, questions } };
         }),
 
-      clearDraft: () => set({ draftQuiz: null }),
+      startEditing: (questionId) => set({ editingQuestionId: questionId }),
+
+      stopEditing: () => set({ editingQuestionId: null }),
+
+      clearDraft: () => set({ draftQuiz: null, editingQuestionId: null }),
     }),
-    { name: "quiz-maker-draft" },
+    {
+      name: "quiz-maker-draft",
+      partialize: (state) => ({ draftQuiz: state.draftQuiz }),
+    },
   ),
 );
 

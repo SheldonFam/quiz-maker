@@ -1,13 +1,24 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
+import { FileText, SearchX } from "lucide-react";
 
 import {
   readCurriculumOptions,
   readQuizzesOptions,
 } from "@/client/@tanstack/react-query.gen";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { QuizFilters } from "./QuizFilters";
 import { QuizList } from "./QuizList";
+import { QuizListError } from "./QuizListError";
+import { QuizListLoading } from "./QuizListLoading";
 
 const routeApi = getRouteApi("/quizzes/");
 
@@ -37,6 +48,11 @@ export function SavedQuizzesPage() {
       }),
       replace: true,
     });
+  };
+
+  const handleClearFilters = async () => {
+    await navigate({ search: {}, replace: true });
+    document.getElementById("quiz-search")?.focus();
   };
 
   const handleLevelChange = (newLevel: string) => {
@@ -75,60 +91,50 @@ export function SavedQuizzesPage() {
         />
       </div>
 
-      {quizzesQuery.isPending && (
-        <div
-          className="space-y-2 rounded-xl bg-card p-4 shadow-xs ring-1 ring-edge"
-          aria-hidden="true"
-        >
-          {Array.from({ length: 3 }, (_, index) => (
-            <div
-              key={index}
-              className="h-12 animate-pulse rounded-lg bg-muted motion-reduce:animate-none"
-            />
-          ))}
-        </div>
-      )}
+      {quizzesQuery.isPending && <QuizListLoading />}
 
       {quizzesQuery.isError && (
-        <div className="rounded-xl bg-card px-6 py-12 text-center shadow-xs ring-1 ring-edge">
-          <p className="font-semibold">Couldn't load your quizzes.</p>
-          <Button
-            variant="outline"
-            className="mt-4"
-            onClick={() => quizzesQuery.refetch()}
-          >
-            Try again
-          </Button>
-        </div>
+        <QuizListError onRetry={() => quizzesQuery.refetch()} />
       )}
 
       {quizzesQuery.isSuccess && quizzesQuery.data.count === 0 && (
-        <div className="rounded-xl bg-card px-6 py-12 text-center shadow-xs ring-1 ring-edge">
+        <Empty>
           {hasFilters ? (
             <>
-              <p className="font-semibold">No quizzes match your search.</p>
-              <Link
-                to="/quizzes"
-                className="mt-2 inline-block font-semibold text-link hover:underline"
-              >
-                Clear filters
-              </Link>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <SearchX />
+                </EmptyMedia>
+                <EmptyTitle>No quizzes match your search</EmptyTitle>
+                <EmptyDescription>
+                  Try another word, or show every quiz again.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button variant="outline" onClick={handleClearFilters}>
+                  Clear filters
+                </Button>
+              </EmptyContent>
             </>
           ) : (
             <>
-              <p className="font-semibold">No saved quizzes yet.</p>
-              <p className="mt-1 text-ink-muted">
-                Create a quiz, check it, then save it here.
-              </p>
-              <Link
-                to="/"
-                className="mt-4 inline-block font-semibold text-link hover:underline"
-              >
-                Create a quiz
-              </Link>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <FileText />
+                </EmptyMedia>
+                <EmptyTitle>No saved quizzes yet</EmptyTitle>
+                <EmptyDescription>
+                  Create a quiz, check it, then save it here.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button nativeButton={false} render={<Link to="/" />}>
+                  Create a quiz
+                </Button>
+              </EmptyContent>
             </>
           )}
-        </div>
+        </Empty>
       )}
 
       {quizzesQuery.isSuccess && quizzesQuery.data.count > 0 && (

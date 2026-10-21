@@ -40,6 +40,7 @@ export function QuizFilters({
         />
         <Input
           type="search"
+          id="quiz-search"
           aria-label="Search quizzes"
           placeholder="Search by title or topic"
           value={search}
