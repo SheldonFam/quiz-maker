@@ -3,6 +3,14 @@ import { ChevronRight } from "lucide-react";
 
 import type { QuizPublic } from "@/client";
 import { Card } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const dateFormat = new Intl.DateTimeFormat("en-MY", {
   day: "numeric",
@@ -17,50 +25,60 @@ type QuizListProps = {
 export function QuizList({ quizzes }: QuizListProps) {
   return (
     <Card className="gap-0 py-0">
-      <div className="hidden grid-cols-[1fr_7rem_6rem_7rem_1.25rem] gap-4 border-b border-input px-6 py-3 text-sm font-semibold sm:grid">
-        <span>Quiz</span>
-        <span>Level</span>
-        <span>Questions</span>
-        <span>Saved</span>
-        <span />
-      </div>
-      <ul className="divide-y divide-border">
-        {quizzes.map((quiz) => (
-          <li key={quiz.id}>
-            <Link
-              to="/quizzes/$quizId"
-              params={{ quizId: String(quiz.id) }}
-              className="grid grid-cols-[1fr_1.25rem] items-center gap-x-4 gap-y-1 px-4 py-3.5 transition-colors duration-150 hover:bg-surface-hover focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:grid-cols-[1fr_7rem_6rem_7rem_1.25rem] sm:px-6"
-            >
-              <span className="min-w-0">
-                <span className="block truncate font-semibold">
-                  {quiz.title}
-                </span>
-                <span className="block truncate text-sm text-muted-foreground">
-                  {quiz.subject} · {quiz.topic}
-                </span>
-              </span>
-              <span className="hidden text-ink-muted sm:block">
-                {quiz.level}
-              </span>
-              <span className="hidden text-ink-muted tabular-nums sm:block">
-                {quiz.questions.length}
-              </span>
-              <span className="hidden text-ink-muted tabular-nums sm:block">
-                {dateFormat.format(new Date(quiz.created_at))}
-              </span>
-              <ChevronRight
-                className="size-5 text-icon sm:col-start-5"
-                aria-hidden="true"
-              />
-              <span className="col-span-2 text-sm text-muted-foreground tabular-nums sm:hidden">
-                {quiz.level} · {quiz.questions.length} questions ·{" "}
-                {dateFormat.format(new Date(quiz.created_at))}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <Table className="table-fixed">
+        <TableHeader className="hidden sm:table-header-group">
+          <TableRow>
+            <TableHead className="pl-6">Quiz</TableHead>
+            <TableHead className="w-32">Level</TableHead>
+            <TableHead className="w-28">Questions</TableHead>
+            <TableHead className="w-32">Saved</TableHead>
+            <TableHead className="w-13 pr-6">
+              <span className="sr-only">Open</span>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {quizzes.map((quiz) => {
+            const savedDate = dateFormat.format(new Date(quiz.created_at));
+
+            return (
+              <TableRow key={quiz.id} className="relative">
+                <TableCell className="py-3.5 pl-4 sm:pl-6">
+                  <Link
+                    to="/quizzes/$quizId"
+                    params={{ quizId: String(quiz.id) }}
+                    className="block truncate font-semibold outline-none after:absolute after:inset-0 focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-ring"
+                  >
+                    {quiz.title}
+                  </Link>
+                  <span className="block truncate text-muted-foreground">
+                    {quiz.subject} · {quiz.topic}
+                  </span>
+                  <span className="mt-1 block truncate text-muted-foreground tabular-nums sm:hidden">
+                    {quiz.level} · {quiz.questions.length} questions ·{" "}
+                    {savedDate}
+                  </span>
+                </TableCell>
+                <TableCell className="hidden text-ink-muted sm:table-cell">
+                  {quiz.level}
+                </TableCell>
+                <TableCell className="hidden text-ink-muted tabular-nums sm:table-cell">
+                  {quiz.questions.length}
+                </TableCell>
+                <TableCell className="hidden text-ink-muted tabular-nums sm:table-cell">
+                  {savedDate}
+                </TableCell>
+                <TableCell className="w-11 pr-4 sm:w-auto sm:pr-6">
+                  <ChevronRight
+                    className="size-5 text-icon"
+                    aria-hidden="true"
+                  />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </Card>
   );
 }
