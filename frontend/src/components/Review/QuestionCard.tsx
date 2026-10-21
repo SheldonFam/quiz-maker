@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Check, Pencil, RefreshCw, Trash2 } from "lucide-react";
+import { Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { generateQuestionMutation } from "@/client/@tanstack/react-query.gen";
 import type { QuestionGenerateRequest } from "@/client";
+import { QuestionContent } from "@/components/Common/QuestionContent";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useDraftQuizStore, type DraftQuestion } from "@/stores/draftQuizStore";
 import { QuestionEditor } from "./QuestionEditor";
 import type { QuestionValues } from "./questionSchema";
-
-const optionLetters = ["A", "B", "C", "D"];
 
 type QuestionCardProps = {
   question: DraftQuestion;
@@ -111,47 +110,7 @@ export function QuestionCard({
             onCancel={() => setIsEditing(false)}
           />
         ) : (
-          <>
-            <p className="text-base font-semibold">{question.text}</p>
-
-            <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-              {question.options.map((option, optionIndex) => {
-                const isCorrect = optionIndex === question.correct_index;
-
-                return (
-                  <li
-                    key={optionIndex}
-                    className={
-                      isCorrect
-                        ? "flex items-center gap-3 rounded-lg bg-correct-soft px-3 py-2.5 font-semibold text-correct inset-ring inset-ring-correct-ring"
-                        : "flex items-center gap-3 rounded-lg px-3 py-2.5 inset-ring inset-ring-border"
-                    }
-                  >
-                    <span
-                      className={
-                        isCorrect
-                          ? "flex size-6 shrink-0 items-center justify-center rounded-md bg-correct-strong text-xs font-semibold text-correct-foreground"
-                          : "flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-semibold text-ink-muted"
-                      }
-                    >
-                      {optionLetters[optionIndex]}
-                    </span>
-                    <span className="flex-1">{option}</span>
-                    {isCorrect && (
-                      <Check className="size-4" aria-label="Correct answer" />
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="mt-4 rounded-lg bg-surface-hover px-4 py-3 text-sm text-ink-muted inset-ring inset-ring-border">
-              <span className="font-semibold text-foreground">
-                Explanation:{" "}
-              </span>
-              {question.explanation}
-            </div>
-          </>
+          <QuestionContent question={question} showAnswer={true} />
         )}
       </div>
     </li>

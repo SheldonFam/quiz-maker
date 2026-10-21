@@ -10,11 +10,12 @@ export type DraftQuestion = QuestionCreate & {
 
 type DraftQuiz = Omit<QuizCreate, "questions"> & {
   questions: DraftQuestion[];
+  savedQuizId: number | null;
 };
 
 type DraftQuizState = {
   draftQuiz: DraftQuiz | null;
-  startDraft: (quiz: QuizCreate) => void;
+  startDraft: (quiz: QuizCreate, savedQuizId?: number) => void;
   replaceQuestion: (questionId: string, question: QuestionCreate) => void;
   updateQuestion: (questionId: string, question: QuestionCreate) => void;
   deleteQuestion: (questionId: string) => void;
@@ -23,7 +24,14 @@ type DraftQuizState = {
 };
 
 const toDraftQuestion = (question: QuestionCreate): DraftQuestion => {
-  return { ...question, id: crypto.randomUUID(), edited: false };
+  return {
+    text: question.text,
+    options: question.options,
+    correct_index: question.correct_index,
+    explanation: question.explanation,
+    id: crypto.randomUUID(),
+    edited: false,
+  };
 };
 
 export const useDraftQuizStore = create<DraftQuizState>()(
@@ -31,11 +39,16 @@ export const useDraftQuizStore = create<DraftQuizState>()(
     (set) => ({
       draftQuiz: null,
 
-      startDraft: (quiz) =>
+      startDraft: (quiz, savedQuizId) =>
         set({
           draftQuiz: {
-            ...quiz,
+            title: quiz.title,
+            level: quiz.level,
+            subject: quiz.subject,
+            topic: quiz.topic,
+            language: quiz.language,
             questions: quiz.questions.map(toDraftQuestion),
+            savedQuizId: savedQuizId ?? null,
           },
         }),
 

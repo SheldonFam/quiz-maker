@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 
 type SaveBarProps = {
   questionCount: number;
+  saveLabel: string;
   isSaving: boolean;
   hasError: boolean;
   onSave: () => void;
@@ -10,6 +11,7 @@ type SaveBarProps = {
 
 export function SaveBar({
   questionCount,
+  saveLabel,
   isSaving,
   hasError,
   onSave,
@@ -32,7 +34,7 @@ export function SaveBar({
             Discard
           </Button>
           <Button onClick={onSave} disabled={isSaving || questionCount === 0}>
-            {isSaving ? "Saving..." : "Save quiz"}
+            {isSaving ? "Saving..." : saveLabel}
           </Button>
         </div>
       </div>

@@ -2,9 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
+import type { QuizPublic } from "@/client";
 import {
   createQuizMutation,
+  readQuizQueryKey,
   readQuizzesQueryKey,
+  updateQuizMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { toQuizCreate, useDraftQuizStore } from "@/stores/draftQuizStore";
 import { QuestionCard } from "./QuestionCard";
@@ -25,6 +28,16 @@ export function ReviewPage() {
     ...createQuizMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: readQuizzesQueryKey() });
+    },
+  });
+
+  const updateQuiz = useMutation({
+    ...updateQuizMutation(),
+    onSuccess: (savedQuiz) => {
+      queryClient.invalidateQueries({ queryKey: readQuizzesQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: readQuizQueryKey({ path: { quiz_id: savedQuiz.id } }),
+      });
     },
   });
 
@@ -52,30 +65,51 @@ export function ReviewPage() {
     language: draftQuiz.language,
   };
 
+  const savedQuizId =
+    typeof draftQuiz.savedQuizId === "number" ? draftQuiz.savedQuizId : null;
+
+  const showSavedQuiz = async (savedQuiz: QuizPublic) => {
+    toast.success(savedQuizId === null ? "Quiz saved" : "Changes saved");
+    await navigate({
+      to: "/quizzes/$quizId",
+      params: { quizId: String(savedQuiz.id) },
+    });
+    clearDraft();
+  };
+
   const handleSave = () => {
-    createQuiz.mutate(
-      { body: toQuizCreate(draftQuiz) },
-      {
-        onSuccess: async (savedQuiz) => {
-          toast.success("Quiz saved");
-          await navigate({
-            to: "/quizzes/$quizId",
-            params: { quizId: String(savedQuiz.id) },
-          });
-          clearDraft();
-        },
-      },
-    );
+    const body = toQuizCreate(draftQuiz);
+
+    if (savedQuizId === null) {
+      createQuiz.mutate({ body }, { onSuccess: showSavedQuiz });
+    } else {
+      updateQuiz.mutate(
+        { path: { quiz_id: savedQuizId }, body },
+        { onSuccess: showSavedQuiz },
+      );
+    }
   };
 
   const handleDiscard = async () => {
-    await navigate({ to: "/" });
+    if (savedQuizId === null) {
+      await navigate({ to: "/" });
+    } else {
+      await navigate({
+        to: "/quizzes/$quizId",
+        params: { quizId: String(savedQuizId) },
+      });
+    }
     clearDraft();
   };
 
   return (
     <div className="mx-auto max-w-3xl pb-24">
       <div className="mb-8">
+        {savedQuizId !== null && (
+          <p className="mb-1 text-sm font-medium text-link">
+            Editing a saved quiz
+          </p>
+        )}
         <h1 className="text-2xl font-bold tracking-tight">{draftQuiz.title}</h1>
         <p className="mt-1 text-ink-muted tabular-nums">
           {draftQuiz.level} · {draftQuiz.subject} · {draftQuiz.questions.length}{" "}
@@ -102,8 +136,9 @@ export function ReviewPage() {
 
       <SaveBar
         questionCount={draftQuiz.questions.length}
-        isSaving={createQuiz.isPending}
-        hasError={createQuiz.isError}
+        saveLabel={savedQuizId === null ? "Save quiz" : "Save changes"}
+        isSaving={createQuiz.isPending || updateQuiz.isPending}
+        hasError={createQuiz.isError || updateQuiz.isError}
         onSave={handleSave}
         onDiscard={handleDiscard}
       />
