@@ -1,7 +1,12 @@
 import { Link } from "@tanstack/react-router";
 
-const navLinkClassName =
-  "rounded-md px-3 py-2 text-sm font-medium text-ink-muted transition-colors duration-150 hover:bg-muted hover:text-foreground [&.active]:bg-muted [&.active]:font-semibold [&.active]:text-foreground";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const navLinkClassName = cn(
+  buttonVariants({ variant: "ghost" }),
+  "[&.active]:bg-muted [&.active]:font-semibold [&.active]:text-foreground",
+);
 
 export function TopBar() {
   return (

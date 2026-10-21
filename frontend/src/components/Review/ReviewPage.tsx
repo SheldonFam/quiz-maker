@@ -8,6 +8,7 @@ import {
   readQuizzesQueryKey,
   updateQuizMutation,
 } from "@/client/@tanstack/react-query.gen";
+import { PageHeader } from "@/components/Common/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toast";
 import { toQuizCreate, useDraftQuizStore } from "@/stores/draftQuizStore";
@@ -110,18 +111,11 @@ export function ReviewPage() {
 
   return (
     <div className="mx-auto max-w-3xl pb-24">
-      <div className="mb-8">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">
-            {draftQuiz.title}
-          </h1>
-          {savedQuizId !== null && <Badge>Editing saved quiz</Badge>}
-        </div>
-        <p className="mt-1 text-ink-muted tabular-nums">
-          {draftQuiz.level} · {draftQuiz.subject} · {draftQuiz.questions.length}{" "}
-          questions · {languageLabels[draftQuiz.language]}
-        </p>
-      </div>
+      <PageHeader
+        title={draftQuiz.title}
+        badge={savedQuizId !== null && <Badge>Editing saved quiz</Badge>}
+        description={`${draftQuiz.level} · ${draftQuiz.subject} · ${draftQuiz.questions.length} questions · ${languageLabels[draftQuiz.language]}`}
+      />
 
       {draftQuiz.questions.length === 0 ? (
         <NoQuestionsLeft />

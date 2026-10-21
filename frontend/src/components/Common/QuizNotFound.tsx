@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FileQuestion } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -24,9 +24,9 @@ export function QuizNotFound() {
         <EmptyDescription>It may have been deleted.</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button nativeButton={false} render={<Link to="/quizzes" />}>
+        <Link to="/quizzes" className={buttonVariants()}>
           Back to saved quizzes
-        </Button>
+        </Link>
       </EmptyContent>
     </Empty>
   );

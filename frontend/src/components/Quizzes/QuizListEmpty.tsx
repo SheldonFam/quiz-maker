@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FileText, SearchX } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -51,9 +51,9 @@ export function QuizListEmpty({
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button nativeButton={false} render={<Link to="/" />}>
+            <Link to="/" className={buttonVariants()}>
               Create a quiz
-            </Button>
+            </Link>
           </EmptyContent>
         </>
       )}

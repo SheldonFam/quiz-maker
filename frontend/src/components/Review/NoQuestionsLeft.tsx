@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ListX } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -26,9 +26,9 @@ export function NoQuestionsLeft() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button nativeButton={false} render={<Link to="/" />}>
+        <Link to="/" className={buttonVariants()}>
           Create a new quiz
-        </Button>
+        </Link>
       </EmptyContent>
     </Empty>
   );

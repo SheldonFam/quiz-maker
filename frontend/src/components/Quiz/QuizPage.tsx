@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, getRouteApi, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Pencil, Printer, Trash2 } from "lucide-react";
+import { Pencil, Printer, Trash2 } from "lucide-react";
 
 import {
   deleteQuizMutation,
   readQuizOptions,
   readQuizzesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
+import { BackLink } from "@/components/Common/BackLink";
 import { ConfirmDialog } from "@/components/Common/ConfirmDialog";
 import { QuestionContent } from "@/components/Common/QuestionContent";
 import { QuizLoading } from "@/components/Common/QuizLoading";
+import { PageHeader } from "@/components/Common/PageHeader";
 import { QuizNotFound } from "@/components/Common/QuizNotFound";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -86,22 +88,12 @@ export function QuizPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link
-        to="/quizzes"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Saved quizzes
-      </Link>
+      <BackLink to="/quizzes">Saved quizzes</BackLink>
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">{quiz.title}</h1>
-        <p className="mt-1 text-ink-muted tabular-nums">
-          {quiz.level} · {quiz.subject} · {quiz.questions.length} questions ·{" "}
-          {languageLabels[quiz.language]} · Saved{" "}
-          {dateFormat.format(new Date(quiz.created_at))}
-        </p>
-      </div>
+      <PageHeader
+        title={quiz.title}
+        description={`${quiz.level} · ${quiz.subject} · ${quiz.questions.length} questions · ${languageLabels[quiz.language]} · Saved ${dateFormat.format(new Date(quiz.created_at))}`}
+      />
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Label className="gap-2.5">

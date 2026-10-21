@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, getRouteApi } from "@tanstack/react-router";
-import { ArrowLeft, Printer } from "lucide-react";
+import { getRouteApi } from "@tanstack/react-router";
+import { Printer } from "lucide-react";
 
 import { readQuizOptions } from "@/client/@tanstack/react-query.gen";
+import { BackLink } from "@/components/Common/BackLink";
+import { PageHeader } from "@/components/Common/PageHeader";
 import { QuizLoading } from "@/components/Common/QuizLoading";
 import { QuizNotFound } from "@/components/Common/QuizNotFound";
 import { Button } from "@/components/ui/button";
@@ -44,31 +46,28 @@ export function PrintQuizPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="print:hidden">
-        <Link
-          to="/quizzes/$quizId"
-          params={{ quizId: String(quiz.id) }}
-          className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
+        <BackLink to="/quizzes/$quizId" params={{ quizId: String(quiz.id) }}>
           {quiz.title}
-        </Link>
+        </BackLink>
 
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Print preview</h1>
-          <div className="flex flex-wrap items-center gap-3">
-            <Tabs value={copy} onValueChange={handleCopyChange}>
-              <TabsList aria-label="Pages to print" activateOnFocus>
-                <TabsTrigger value="student">Student copy</TabsTrigger>
-                <TabsTrigger value="teacher">Teacher copy</TabsTrigger>
-                <TabsTrigger value="both">Both</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <Button onClick={() => window.print()}>
-              <Printer />
-              Print
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="Print preview"
+          actions={
+            <>
+              <Tabs value={copy} onValueChange={handleCopyChange}>
+                <TabsList aria-label="Pages to print" activateOnFocus>
+                  <TabsTrigger value="student">Student copy</TabsTrigger>
+                  <TabsTrigger value="teacher">Teacher copy</TabsTrigger>
+                  <TabsTrigger value="both">Both</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <Button onClick={() => window.print()}>
+                <Printer />
+                Print
+              </Button>
+            </>
+          }
+        />
       </div>
 
       <div className="grid justify-items-center gap-8 rounded-xl bg-paper-desk px-4 py-10 ring-1 ring-edge print:block print:rounded-none print:bg-transparent print:p-0 print:ring-0">

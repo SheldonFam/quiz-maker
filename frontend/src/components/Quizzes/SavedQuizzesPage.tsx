@@ -6,7 +6,8 @@ import {
   readQuizzesOptions,
 } from "@/client/@tanstack/react-query.gen";
 import { LoadError } from "@/components/Common/LoadError";
-import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/Common/PageHeader";
+import { buttonVariants } from "@/components/ui/button";
 import { QuizFilters } from "./QuizFilters";
 import { QuizList } from "./QuizList";
 import { QuizListEmpty } from "./QuizListEmpty";
@@ -59,19 +60,19 @@ export function SavedQuizzesPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Saved quizzes</h1>
-          <p className="mt-1 text-ink-muted tabular-nums">
-            {quizzesQuery.isSuccess
-              ? `${quizzesQuery.data.count} ${quizzesQuery.data.count === 1 ? "quiz" : "quizzes"}`
-              : "Your saved quizzes"}
-          </p>
-        </div>
-        <Button nativeButton={false} render={<Link to="/" />}>
-          New quiz
-        </Button>
-      </div>
+      <PageHeader
+        title="Saved quizzes"
+        description={
+          quizzesQuery.isSuccess
+            ? `${quizzesQuery.data.count} ${quizzesQuery.data.count === 1 ? "quiz" : "quizzes"}`
+            : "Your saved quizzes"
+        }
+        actions={
+          <Link to="/" className={buttonVariants()}>
+            New quiz
+          </Link>
+        }
+      />
 
       <div className="mb-4">
         <QuizFilters

@@ -5,6 +5,7 @@ import {
   readCurriculumOptions,
 } from "@/client/@tanstack/react-query.gen";
 import { LoadError } from "@/components/Common/LoadError";
+import { PageHeader } from "@/components/Common/PageHeader";
 import { NewQuizForm } from "./NewQuizForm";
 import { NewQuizFormLoading } from "./NewQuizFormLoading";
 import type { NewQuizValues } from "./newQuizSchema";
@@ -36,13 +37,10 @@ export function NewQuizPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">New quiz</h1>
-        <p className="mt-1 text-ink-muted">
-          Pick a level, subject and topic. You can check and change every
-          question before saving.
-        </p>
-      </div>
+      <PageHeader
+        title="New quiz"
+        description="Pick a level, subject and topic. You can check and change every question before saving."
+      />
 
       {curriculumQuery.isPending && <NewQuizFormLoading />}
       {curriculumQuery.isError && (
