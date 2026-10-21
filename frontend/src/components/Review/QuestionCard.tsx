@@ -46,6 +46,12 @@ export function QuestionCard({
         onSuccess: (newQuestion) => {
           replaceQuestion(question.id, newQuestion);
         },
+        onError: () => {
+          toast.add({
+            title: "Couldn't write a new version. Try again.",
+            type: "error",
+          });
+        },
       },
     );
   };

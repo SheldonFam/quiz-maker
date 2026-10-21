@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { FilePlus2, ListX } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 import type { QuizPublic } from "@/client";
 import {
@@ -9,17 +8,10 @@ import {
   readQuizzesQueryKey,
   updateQuizMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { Button } from "@/components/ui/button";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import { toast } from "@/components/ui/toast";
 import { toQuizCreate, useDraftQuizStore } from "@/stores/draftQuizStore";
+import { NoQuestionsLeft } from "./NoQuestionsLeft";
+import { NoQuizToReview } from "./NoQuizToReview";
 import { QuestionCard } from "./QuestionCard";
 import { SaveBar } from "./SaveBar";
 
@@ -55,26 +47,7 @@ export function ReviewPage() {
   });
 
   if (draftQuiz === null) {
-    return (
-      <Empty className="mx-auto max-w-3xl">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <FilePlus2 />
-          </EmptyMedia>
-          <EmptyTitle>
-            <h1>No quiz to review</h1>
-          </EmptyTitle>
-          <EmptyDescription>
-            Create a quiz first, then check it here.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button nativeButton={false} render={<Link to="/" />}>
-            Create a quiz
-          </Button>
-        </EmptyContent>
-      </Empty>
-    );
+    return <NoQuizToReview />;
   }
 
   const questionRequest = {
@@ -150,24 +123,7 @@ export function ReviewPage() {
       </div>
 
       {draftQuiz.questions.length === 0 ? (
-        <Empty>
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <ListX />
-            </EmptyMedia>
-            <EmptyTitle>
-              <h2>No questions left</h2>
-            </EmptyTitle>
-            <EmptyDescription>
-              You deleted every question. Create a new quiz to start again.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button nativeButton={false} render={<Link to="/" />}>
-              Create a new quiz
-            </Button>
-          </EmptyContent>
-        </Empty>
+        <NoQuestionsLeft />
       ) : (
         <ol className="space-y-4">
           {draftQuiz.questions.map((question, position) => (

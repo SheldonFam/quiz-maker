@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, getRouteApi } from "@tanstack/react-router";
-import { FileText, SearchX } from "lucide-react";
 
 import {
   readCurriculumOptions,
@@ -8,16 +7,9 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { LoadError } from "@/components/Common/LoadError";
 import { Button } from "@/components/ui/button";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import { QuizFilters } from "./QuizFilters";
 import { QuizList } from "./QuizList";
+import { QuizListEmpty } from "./QuizListEmpty";
 import { QuizListLoading } from "./QuizListLoading";
 
 const routeApi = getRouteApi("/quizzes/");
@@ -101,43 +93,10 @@ export function SavedQuizzesPage() {
       )}
 
       {quizzesQuery.isSuccess && quizzesQuery.data.count === 0 && (
-        <Empty>
-          {hasFilters ? (
-            <>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <SearchX />
-                </EmptyMedia>
-                <EmptyTitle>No quizzes match your search</EmptyTitle>
-                <EmptyDescription>
-                  Try another word, or show every quiz again.
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button variant="outline" onClick={handleClearFilters}>
-                  Clear filters
-                </Button>
-              </EmptyContent>
-            </>
-          ) : (
-            <>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <FileText />
-                </EmptyMedia>
-                <EmptyTitle>No saved quizzes yet</EmptyTitle>
-                <EmptyDescription>
-                  Create a quiz, check it, then save it here.
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button nativeButton={false} render={<Link to="/" />}>
-                  Create a quiz
-                </Button>
-              </EmptyContent>
-            </>
-          )}
-        </Empty>
+        <QuizListEmpty
+          hasFilters={hasFilters}
+          onClearFilters={handleClearFilters}
+        />
       )}
 
       {quizzesQuery.isSuccess && quizzesQuery.data.count > 0 && (

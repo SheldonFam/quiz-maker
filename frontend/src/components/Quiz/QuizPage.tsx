@@ -73,6 +73,12 @@ export function QuizPage() {
           toast.add({ title: "Quiz deleted", type: "success" });
           await navigate({ to: "/quizzes" });
         },
+        onError: () => {
+          toast.add({
+            title: "Couldn't delete the quiz. Try again.",
+            type: "error",
+          });
+        },
       },
     );
   };
