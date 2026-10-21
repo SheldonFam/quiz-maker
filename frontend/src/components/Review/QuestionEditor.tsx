@@ -10,6 +10,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import type { DraftQuestion } from "@/stores/draftQuizStore";
@@ -86,12 +87,12 @@ export function QuestionEditor({
             return (
               <div key={optionField.name} className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <label
+                  <Label
                     htmlFor={optionId}
                     className="w-4 text-xs font-semibold text-ink-muted"
                   >
                     {optionField.letter}
-                  </label>
+                  </Label>
                   <Input
                     id={optionId}
                     aria-invalid={optionError ? true : undefined}
@@ -125,16 +126,13 @@ export function QuestionEditor({
               className="flex flex-wrap gap-x-5 gap-y-2"
             >
               {optionFields.map((optionField, optionIndex) => (
-                <label
-                  key={optionField.name}
-                  className="flex items-center gap-2 text-sm font-medium"
-                >
+                <Label key={optionField.name}>
                   <RadioGroupItem
                     value={optionIndex}
                     className="size-5 data-checked:bg-correct-strong"
                   />
                   {optionField.letter}
-                </label>
+                </Label>
               ))}
             </RadioGroup>
           )}

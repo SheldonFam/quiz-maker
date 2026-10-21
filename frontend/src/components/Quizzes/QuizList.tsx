@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 
 import type { QuizPublic } from "@/client";
+import { Card } from "@/components/ui/card";
 
 const dateFormat = new Intl.DateTimeFormat("en-MY", {
   day: "numeric",
@@ -15,7 +16,7 @@ type QuizListProps = {
 
 export function QuizList({ quizzes }: QuizListProps) {
   return (
-    <div className="overflow-hidden rounded-xl bg-card shadow-xs ring-1 ring-edge">
+    <Card className="gap-0 py-0">
       <div className="hidden grid-cols-[1fr_7rem_6rem_7rem_1.25rem] gap-4 border-b border-input px-6 py-3 text-sm font-semibold sm:grid">
         <span>Quiz</span>
         <span>Level</span>
@@ -60,6 +61,6 @@ export function QuizList({ quizzes }: QuizListProps) {
           </li>
         ))}
       </ul>
-    </div>
+    </Card>
   );
 }

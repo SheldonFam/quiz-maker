@@ -1,11 +1,9 @@
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function NewQuizFormLoading() {
   return (
-    <div
-      className="space-y-7 rounded-xl bg-card p-5 shadow-xs ring-1 ring-edge sm:p-8"
-      aria-busy="true"
-    >
+    <Card className="gap-7 p-5 sm:p-8" aria-busy="true">
       <span className="sr-only" role="status">
         Loading levels...
       </span>
@@ -18,6 +16,6 @@ export function NewQuizFormLoading() {
         <Skeleton className="h-15 rounded-lg" />
         <Skeleton className="h-15 rounded-lg" />
       </div>
-    </div>
+    </Card>
   );
 }

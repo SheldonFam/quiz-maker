@@ -13,6 +13,7 @@ import { QuestionContent } from "@/components/Common/QuestionContent";
 import { QuizLoading } from "@/components/Common/QuizLoading";
 import { QuizNotFound } from "@/components/Common/QuizNotFound";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
@@ -142,14 +143,13 @@ export function QuizPage() {
 
       <ol className="space-y-4">
         {quiz.questions.map((question, position) => (
-          <li
-            key={question.id}
-            className="rounded-xl bg-card px-4 pt-4 pb-6 shadow-xs ring-1 ring-edge sm:px-6"
-          >
-            <p className="mb-2 text-sm font-semibold text-ink-muted tabular-nums">
-              Question {position + 1}
-            </p>
-            <QuestionContent question={question} showAnswer={showAnswers} />
+          <li key={question.id}>
+            <Card className="gap-0 px-4 pt-4 pb-6 sm:px-6">
+              <p className="mb-2 text-sm font-semibold text-ink-muted tabular-nums">
+                Question {position + 1}
+              </p>
+              <QuestionContent question={question} showAnswer={showAnswers} />
+            </Card>
           </li>
         ))}
       </ol>

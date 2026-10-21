@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type GeneratingQuizProps = {
@@ -16,9 +17,9 @@ export function GeneratingQuiz({
 
   return (
     <div className="space-y-4">
-      <div
+      <Card
         role="status"
-        className="flex items-center justify-between gap-4 rounded-xl bg-card px-5 py-4 shadow-xs ring-1 ring-edge"
+        className="flex-row items-center justify-between gap-4 px-5 py-4"
       >
         <div>
           <p className="font-semibold">
@@ -31,7 +32,7 @@ export function GeneratingQuiz({
         <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-      </div>
+      </Card>
 
       {Array.from({ length: skeletonCardCount }, (_, index) => (
         <SkeletonQuestionCard key={index} />
@@ -42,16 +43,13 @@ export function GeneratingQuiz({
 
 function SkeletonQuestionCard() {
   return (
-    <div
-      aria-hidden="true"
-      className="rounded-xl bg-card p-6 shadow-xs ring-1 ring-edge"
-    >
+    <Card aria-hidden="true" className="gap-0 p-6">
       <Skeleton className="h-4 w-2/3 rounded-full" />
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
         {Array.from({ length: 4 }, (_, index) => (
           <Skeleton key={index} className="h-10 rounded-lg" />
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
